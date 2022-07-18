@@ -62,19 +62,37 @@ function sendNotificaiton(notiToken, title, body){
 
 
 app.post('/updateUser', async (req, res) => {
+
+ authStatus = await testAuth(req.headers['authorization']);
+
+if(authStatus){
   await admin.firestore().collection('Users').doc(req.body.uid).set(req.body)
   res.send({info: 'User Updated'})
+}
+else {
+  res.send({status:400});
+}
 })
 
 app.post('/getUser', async (req, res) => {
+  if(await testAuth(req.headers['authorization'])){
   const snapshot = await admin.firestore().collection('Users').doc(req.body.uid).get()
   res.send(snapshot.data())
+  }
+  else {
+    res.send({status:400});
+  }
 })
 
 
 app.post('/deleteUser', async (req, res) => {
+  if(await testAuth(req.headers['authorization'])){
   await admin.firestore().collection('Users').doc(req.body.uid).delete()
   res.send({info: 'User Deleted'})
+  }
+  else{
+    res.send({status:400});
+  }
 })
 
 app.post('/createUser', async (req, res) => {
