@@ -1,6 +1,6 @@
 const algoliasearch = require('algoliasearch');
 
-const client = algoliasearch('wassup', 'shi u cant see');
+const client = algoliasearch('3IL7N429NT', '5f17a8472318554afa274ab4f70cb592');
 const index = client.initIndex('searchUser');
 
 const express = require('express');
