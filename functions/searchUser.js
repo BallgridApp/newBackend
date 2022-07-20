@@ -9,10 +9,7 @@ search.use(express.json());
 
 var admin = require('firebase-admin');
 
-admin.initializeApp({
-	credential: admin.credential.applicationDefault()
-});
-
+const functions = require("firebase-functions");
 
 async function testAuth(token) { //req.headers['authorization']
 	if (token) {
@@ -32,11 +29,6 @@ async function testAuth(token) { //req.headers['authorization']
 
 }
 
-search.listen(8080, function() {
-    console.log('listening on port 8080')
-  })
-
-
 
 search.post('/searchUser', async function(req, res){
   if (await testAuth(req.headers['authorization'])){
@@ -50,6 +42,8 @@ index.search(req.body.searchQuerry).then(({ hits }) => {
   }
 }
   else{
-    res.send({status: 400});
+    res.send({status: 400, info: "auth error"});
   }
 })
+
+exports.search = functions.https.onRequest(search);

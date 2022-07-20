@@ -4,6 +4,9 @@ const app = express();
 app.use(express.json());
 const bodyParser = require('body-parser')
 const functions = require("firebase-functions");
+const algoliasearch = require('algoliasearch');
+const client = algoliasearch('3IL7N429NT', '5f17a8472318554afa274ab4f70cb592');
+const index = client.initIndex('searchUser');
 app.use(bodyParser.urlencoded({
 	extended: true
 }))
@@ -465,5 +468,21 @@ app.post('/getFriends', async (req, res) => {
 			info: "auth failed"
 		});
 	}
-})     
+}) 
+
+app.post('/searchUser', async function(req, res){
+	if (await testAuth(req.headers['authorization'])){
+	  try{
+  index.search(req.body.searchQuerry).then(({ hits }) => {
+	  res.send(hits);
+	});
+	}
+	catch (error){
+	  res.send({status:400});
+	}
+  }
+	else{
+	  res.send({status: 400});
+	}
+  })
 exports.app = functions.https.onRequest(app)
