@@ -2,20 +2,12 @@
 
 var admin = require('firebase-admin'); 
 const express = require('express');
-const app = express();
-app.use(express.json());
-const bodyParser= require('body-parser')
+const match = express();
+match.use(express.json());
+const bodyParser= require('body-parser');
+const functions = require("firebase-functions");
 
-app.use(bodyParser.urlencoded({ extended: true }))
-
-app.listen(8080, function() {
-  console.log('listening on port 8080')
-})
-
- admin.initializeApp({
-  credential: admin.credential.applicationDefault()
-});
-
+match.use(bodyParser.urlencoded({ extended: true }))
 
 
 const db = admin.firestore();
@@ -59,7 +51,7 @@ async function testAuth(token) { //req.headers['authorization']
 
 }
 
-app.post('/createMatch', async (req, res) => {
+match.post('/createMatch', async (req, res) => {
   if (await testAuth(req.headers['authorization'])) {
     try{
     const snapshot = await admin.firestore().collection('users').doc(req.body.uid1).get()
@@ -80,7 +72,7 @@ app.post('/createMatch', async (req, res) => {
   }
   })
 
-  app.post('/cancelMatch', async (req, res) => {
+  match.post('/cancelMatch', async (req, res) => {
     if (await testAuth(req.headers['authorization'])) {
       try {
     const snapshot = await admin.firestore().collection('users').doc(req.body.uid1).get()
@@ -110,7 +102,7 @@ app.post('/createMatch', async (req, res) => {
   })
 
   
-  app.post('/acceptMatch', async (req, res) => {
+match.post('/acceptMatch', async (req, res) => {
     if (await testAuth(req.headers['authorization'])) {
       try {
     const snapshot = await admin.firestore().collection('users').doc(req.body.uid1).get()
@@ -141,3 +133,5 @@ app.post('/createMatch', async (req, res) => {
   }
     
   })
+
+  exports.match = functions.https.onRequest(match)
