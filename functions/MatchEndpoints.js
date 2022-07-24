@@ -21,6 +21,44 @@ app.listen(8080, function() {
 const db = admin.firestore();
 
 
+function sendNotificaiton(notiToken, title, body) {
+
+	const fetch = require('node-fetch');
+	let todo = {
+		to: notiToken,
+		title: title,
+		body: body
+	};
+
+	fetch('https://exp.host/--/api/v2/push/send', {
+			method: 'POST',
+			body: JSON.stringify(todo),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(res => res.json())
+		.then(json => console.log(json));
+}
+
+
+async function testAuth(token) { //req.headers['authorization']
+	if (token) {
+
+		return await admin
+			.auth()
+			.verifyIdToken(token)
+			.then(function() {
+				return Promise.resolve(true)
+			})
+			.catch(function() {
+				return Promise.resolve(false)
+			})
+	} else {
+		return false
+	}
+
+}
+
 app.post('/createMatch', async (req, res) => {
   if (await testAuth(req.headers['authorization'])) {
     try{
@@ -32,7 +70,7 @@ app.post('/createMatch', async (req, res) => {
     let snippet = snip.data()
     snippet.Matches.push(req.body.data2)
     await admin.firestore().collection('users').doc(req.body.uid2).set(snippet)
-    //sendNotificaiton(req.body.notiToken, req.body.title, req.body.body);
+    sendNotificaiton(req.body.notiToken, req.body.title, req.body.body);
     res.send({status: 200})
     } catch (error) {
       res.send({error: error.message})}
@@ -91,6 +129,7 @@ app.post('/createMatch', async (req, res) => {
              }
            }
            await admin.firestore().collection('users').doc(req.body.uid1).set(postModel) 
+           sendNotificaiton(req.body.notiToken, req.body.title, req.body.body);
            res.send({status: "200 OK"});
        } 
     }
