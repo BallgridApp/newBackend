@@ -22,7 +22,8 @@ const db = admin.firestore();
 
 
 app.post('/createMatch', async (req, res) => {
-    
+  if (await testAuth(req.headers['authorization'])) {
+    try{
     const snapshot = await admin.firestore().collection('users').doc(req.body.uid1).get()
     let postModel = snapshot.data()
     postModel.Matches.push(req.body.data1)
@@ -32,11 +33,18 @@ app.post('/createMatch', async (req, res) => {
     snippet.Matches.push(req.body.data2)
     await admin.firestore().collection('users').doc(req.body.uid2).set(snippet)
     //sendNotificaiton(req.body.notiToken, req.body.title, req.body.body);
-    res.send({info: "never is enough"})
+    res.send({status: 200})
+    } catch (error) {
+      res.send({error: error.message})}
+  }
+  else{
+    res.send({info: "auth failed"})
+  }
   })
 
   app.post('/cancelMatch', async (req, res) => {
-    
+    if (await testAuth(req.headers['authorization'])) {
+      try {
     const snapshot = await admin.firestore().collection('users').doc(req.body.uid1).get()
     let postModel = snapshot.data()
     const snip = await admin.firestore().collection('users').doc(req.body.uid2).get()
@@ -53,16 +61,20 @@ app.post('/createMatch', async (req, res) => {
              }
            }
            await admin.firestore().collection('users').doc(req.body.uid1).set(postModel) 
-           res.send("lets fucking go")
+           res.send({status: 200})
        }
     }
-    
-    
+  } catch (error) {res.send(error)}
+    }
+     else{
+      res.send({status: 400,  message: "Invalid authorization"}); 
+     }
   })
 
   
   app.post('/acceptMatch', async (req, res) => {
-    
+    if (await testAuth(req.headers['authorization'])) {
+      try {
     const snapshot = await admin.firestore().collection('users').doc(req.body.uid1).get()
     let postModel = snapshot.data()
     const snip = await admin.firestore().collection('users').doc(req.body.uid2).get()
@@ -79,9 +91,14 @@ app.post('/createMatch', async (req, res) => {
              }
            }
            await admin.firestore().collection('users').doc(req.body.uid1).set(postModel) 
-           res.send("lets fucking go")
-       }
+           res.send({status: "200 OK"});
+       } 
     }
-    
+  } catch (error){
+    res.send(error.message);
+  }
+  } else{
+    res.send({info: "auth failed"})
+  }
     
   })
