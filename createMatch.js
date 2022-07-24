@@ -38,13 +38,47 @@ app.post('/createMatch', async (req, res) => {
     
     const snapshot = await admin.firestore().collection('users').doc(req.body.uid1).get()
     let postModel = snapshot.data()
+    const snip = await admin.firestore().collection('users').doc(req.body.uid2).get()
+    let snippet = snip.data()
     let data = postModel.Matches;      //data is the match array
     for (let index = 0; index < data.length; index++) {
         const element = data[index];
-       if(element.Ref = req.body.uid1){ //we check for the same ref in that araray the req gives
-     postModel.Matches[index].status = "rejected"; // we change the match array term status to rejected
-      await admin.firestore().collection('users').doc(req.body.uid1).set(postModel) 
-      res.send("lets fucking go")
+       if(element.Ref = req.body.uid2){ //we check for the same ref in that araray the req gives
+           postModel.Matches[index].status = "rejected"; // we change the match array term status to rejected
+           for (let i = 0; i < snippet.Matches.length; i++) {
+             if(snippet.Matches[i].Ref == req.body.uid1){
+              snippet.Matches[i].status = "rejected";
+              await admin.firestore().collection('users').doc(req.body.uid2).set(snippet) 
+             }
+           }
+           await admin.firestore().collection('users').doc(req.body.uid1).set(postModel) 
+           res.send("lets fucking go")
+       }
+    }
+    
+    
+  })
+
+  
+  app.post('/acceptMatch', async (req, res) => {
+    
+    const snapshot = await admin.firestore().collection('users').doc(req.body.uid1).get()
+    let postModel = snapshot.data()
+    const snip = await admin.firestore().collection('users').doc(req.body.uid2).get()
+    let snippet = snip.data()
+    let data = postModel.Matches;      //data is the match array
+    for (let index = 0; index < data.length; index++) {
+        const element = data[index];
+       if(element.Ref = req.body.uid2){ //we check for the same ref in that araray the req gives
+           postModel.Matches[index].status = "accepted"; // we change the match array term status to rejected
+           for (let i = 0; i < snippet.Matches.length; i++) {
+             if(snippet.Matches[i].Ref == req.body.uid1){
+              snippet.Matches[i].status = "accepted";
+              await admin.firestore().collection('users').doc(req.body.uid2).set(snippet) 
+             }
+           }
+           await admin.firestore().collection('users').doc(req.body.uid1).set(postModel) 
+           res.send("lets fucking go")
        }
     }
     
