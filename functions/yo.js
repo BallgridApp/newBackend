@@ -71,12 +71,14 @@ app.post('/updateUser', async (req, res) => {
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info: "check the request body"
 			});
 		}
 	} else {
 		res.send({
-			status: 400
+			status: 400,
+			info : "auth failed"
 		});
 	}
 })
@@ -88,12 +90,14 @@ app.post('/getUser', async (req, res) => {
 			res.send(snapshot.data())
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info:"check the request body"
 			});
 		}
 	} else {
 		res.send({
-			status: 400
+			status: 400,
+			info: "auth failed"
 		});
 	}
 })
@@ -108,12 +112,14 @@ app.post('/deleteUser', async (req, res) => {
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info: "check the request body"
 			});
 		}
 	} else {
 		res.send({
-			status: 400
+			status: 400,
+			info : "auth failed"
 		});
 	}
 })
@@ -127,12 +133,14 @@ app.post('/createUser', async (req, res) => {
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400, 
+				info:"check the request body"
 			});
 		}
 	} else {
 		res.send({
-			status: 400
+			status: 400, 
+			info: "auth failed"
 		});
 	}
 })
@@ -146,12 +154,14 @@ app.post('/updatePost', async (req, res) => {
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info :"check the request body"
 			});
 		}
 	} else {
 		res.send({
-			status: 400
+			status: 400,
+			info: "auth failed"
 		});
 	}
 
@@ -164,7 +174,8 @@ app.post('/getPost', async (req, res) => {
 			res.send(snapshot.data())
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info: "check the request body"
 			});
 		}
 	} else {
@@ -184,7 +195,8 @@ app.post('/deletePost', async (req, res) => {
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info: "check the request body"
 			});
 		}
 	} else {
@@ -204,7 +216,8 @@ app.post('/createPost', async (req, res) => {
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info : "check the request body"
 			});
 		}
 
@@ -225,11 +238,12 @@ app.post('/addLike', async (req, res) => {
 			await admin.firestore().collection('Posts').doc(req.body.uid).set(postModel)
 			sendNotificaiton(req.body.notiToken, req.body.title, req.body.body);
 			res.send({
-				info: "never is enough"
+				status: 200
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info :"check the request body"
 			});
 		}
 	} else {
@@ -248,11 +262,12 @@ app.post('/unlikePost', async (req, res) => {
 			postModel.Likes + -1
 			await admin.firestore().collection('Posts').doc(req.body.uid).set(postModel)
 			res.send({
-				info: "coding is for special children"
+				status : 200
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info : "check the request body"
 			});
 
 		}
@@ -273,11 +288,12 @@ app.post('/addComment', async (req, res) => {
 			await admin.firestore().collection('Posts').doc(req.body.uid).set(postModel)
 			sendNotificaiton(req.body.notiToken, req.body.title, req.body.body);
 			res.send({
-				info: "never is enough"
+				status : 200
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info : "check the request body"
 			});
 		}
 	} else {
@@ -296,11 +312,12 @@ app.post('/removeComment', async (req, res) => {
 			postModel.comments.splice(postModel.comments.indexOf(req.body.comment))
 			await admin.firestore().collection('Posts').doc(req.body.uid).set(postModel)
 			res.send({
-				info: "never is enough"
+				status : 200
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400 , 
+				info : "check the request body"
 			});
 		}
 	} else {
@@ -320,11 +337,12 @@ app.post('/addFriendRequest', async (req, res) => {
 			await admin.firestore().collection('Posts').doc(req.body.uid).set(postModel)
 			sendNotificaiton(req.body.notiToken, req.body.title, req.body.body);
 			res.send({
-				info: "never is enough"
+				status : 200
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info: "check the request body"
 			})
 		}
 	} else {
@@ -343,11 +361,12 @@ app.post('/declineFriendRequest', async (req, res) => {
 			postModel.friendRequests.splice(postModel.friendRequests.indexOf(req.body.reqUid))
 			await admin.firestore().collection('Posts').doc(req.body.uid).set(postModel)
 			res.send({
-				info: "never is enough"
+				status : 200
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400 , 
+				info : "check the request body"
 			})
 		}
 	} else {
@@ -365,7 +384,8 @@ app.post('/getFriendRequests', async (req, res) => {
 			res.send(snapshot.data().friendRequests)
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info: "check the request body"
 			});
 		}
 	} else {
@@ -385,11 +405,12 @@ app.post('/addFriend', async (req, res) => {
 			await admin.firestore().collection('Posts').doc(req.body.uid).set(postModel)
 			sendNotificaiton(req.body.notiToken, req.body.title, req.body.body);
 			res.send({
-				info: "never is enough"
+				status: 200
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info : "check the request body"
 			});
 		}
 	} else {
@@ -408,11 +429,12 @@ app.post('/removeFriend', async (req, res) => {
 			postModel.friends.splice(postModel.friends.indexOf(req.body.reqUid))
 			await admin.firestore().collection('Posts').doc(req.body.uid).set(postModel)
 			res.send({
-				info: "never is enough"
+				status: 200
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info : "check the request body"
 			})
 		}
 	} else {
@@ -437,11 +459,12 @@ app.post('/acceptFriendRequest', async (req, res) => {
 			await admin.firestore().collection('Posts').doc(req.body.uid).set(postModel)
 			sendNotificaiton(req.body.notiToken, req.body.title, req.body.body);
 			res.send({
-				info: "never is enough"
+				status : 200
 			})
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info : "check the request body"
 			})
 		}
 	} else {
@@ -459,7 +482,8 @@ app.post('/getFriends', async (req, res) => {
 			res.send(snapshot.data().friends)
 		} catch (error) {
 			res.send({
-				status: 400
+				status: 400,
+				info : "check the request body"
 			})
 		}
 	} else {
@@ -478,11 +502,11 @@ app.post('/searchUser', async function(req, res){
 	});
 	}
 	catch (error){
-	  res.send({status:400});
+	  res.send({status:400, info: "check the request body"});
 	}
   }
 	else{
-	  res.send({status: 400});
+	  res.send({status: 400, info : "auth failed"});
 	}
   })
 exports.app = functions.https.onRequest(app)

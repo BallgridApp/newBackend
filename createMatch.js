@@ -19,6 +19,24 @@ app.listen(8080, function() {
 
 const db = admin.firestore();
 
+async function testAuth(token) { //req.headers['authorization']
+	if (token) {
+
+		return await admin
+			.auth()
+			.verifyIdToken(token)
+			.then(function() {
+				return Promise.resolve(true)
+			})
+			.catch(function() {
+				return Promise.resolve(false)
+			})
+	} else {
+		return false
+	}
+
+}
+
 
 app.post('/createMatch', async (req, res) => {
     
@@ -84,3 +102,5 @@ app.post('/createMatch', async (req, res) => {
     
     
   })
+
+  

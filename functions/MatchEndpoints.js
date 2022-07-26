@@ -65,10 +65,10 @@ match.post('/createMatch', async (req, res) => {
     sendNotificaiton(req.body.notiToken, req.body.title, req.body.body);
     res.send({status: 200})
     } catch (error) {
-      res.send({error: error.message})}
+      res.send({status : 400, info: "check the request body"})}
   }
   else{
-    res.send({info: "auth failed"})
+    res.send({status : 400, info: "auth failed"})
   }
   })
 
@@ -94,7 +94,7 @@ match.post('/createMatch', async (req, res) => {
            res.send({status: 200})
        }
     }
-  } catch (error) {res.send(error)}
+  } catch (error) {res.send({status: 400, info: "check the request body"})}
     }
      else{
       res.send({status: 400,  message: "Invalid authorization"}); 
@@ -126,10 +126,10 @@ match.post('/acceptMatch', async (req, res) => {
        } 
     }
   } catch (error){
-    res.send(error.message);
+    res.send({status : 400, info: "check the request body"});
   }
   } else{
-    res.send({info: "auth failed"})
+    res.send({status : 400, info: "auth failed"})
   }
     
   })
