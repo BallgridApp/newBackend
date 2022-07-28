@@ -59,7 +59,7 @@ function sendNotificaiton(notiToken, title, body) {
 }
 
 
-app.post('/updateUser', async (req, res) => {
+app.post('/updateUser', async (req, res) => { // uid : "a;sdlkfjasdfasdf" , bio: "ye", then the rest of the body of the user. check firestore for a potential mode as it is not finalized yet
 
 	authStatus = await testAuth(req.headers['authorization']);
 
@@ -83,7 +83,7 @@ app.post('/updateUser', async (req, res) => {
 	}
 })
 
-app.post('/getUser', async (req, res) => {
+app.post('/getUser', async (req, res) => {   //uid : "asdfasdfasdf"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
 			const snapshot = await admin.firestore().collection('Users').doc(req.body.uid).get()
@@ -103,7 +103,7 @@ app.post('/getUser', async (req, res) => {
 })
 
 
-app.post('/deleteUser', async (req, res) => {
+app.post('/deleteUser', async (req, res) => {  //uid : "asdfasdfasdf"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
 			await admin.firestore().collection('Users').doc(req.body.uid).delete()
@@ -124,7 +124,7 @@ app.post('/deleteUser', async (req, res) => {
 	}
 })
 
-app.post('/createUser', async (req, res) => {
+app.post('/createUser', async (req, res) => {  // uid : "asdf", then the body of the user being created. bio, fire and last name, etc
 	if (await testAuth(req.headers['authorization'])) {
 		try {
 			await admin.firestore().collection('Users').doc(req.body.uid).set(req.body)
@@ -145,7 +145,7 @@ app.post('/createUser', async (req, res) => {
 	}
 })
 
-app.post('/updatePost', async (req, res) => {
+app.post('/updatePost', async (req, res) => { // uid : "asdfasdfasdf", then teh body of the updated user. 
 	if (await testAuth(req.headers['authorization'])) {
 		try {
 			await admin.firestore().collection('Posts').doc(req.body.uid).set(req.body)
@@ -167,7 +167,7 @@ app.post('/updatePost', async (req, res) => {
 
 })
 
-app.post('/getPost', async (req, res) => {
+app.post('/getPost', async (req, res) => { // uid : "asdfasdfasdf"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
 			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
@@ -186,7 +186,7 @@ app.post('/getPost', async (req, res) => {
 	}
 })
 
-app.post('/deletePost', async (req, res) => {
+app.post('/deletePost', async (req, res) => { // uid: "asdfasdfasdf"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
 			await admin.firestore().collection('Posts').doc(req.body.uid).delete()
@@ -207,7 +207,7 @@ app.post('/deletePost', async (req, res) => {
 	}
 })
 
-app.post('/createPost', async (req, res) => {
+app.post('/createPost', async (req, res) => { // uid: "asdfasdfasdf" , title : "a kage was born", comments : [], likes : 0
 	if (await testAuth(req.headers['authorization'])) {
 		try {
 			await admin.firestore().collection('Posts').doc(req.body.uid).set(req.body)
@@ -229,7 +229,7 @@ app.post('/createPost', async (req, res) => {
 	}
 })
 
-app.post('/addLike', async (req, res) => {
+app.post('/addLike', async (req, res) => { // uid : "asdfasdfasdf", "notiToken" , "ExponentPushToken[tjJyGyGcg6kUw5G8nkACzt]", title: "post", "body" : "someone has liked your post"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
 			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
@@ -255,7 +255,7 @@ app.post('/addLike', async (req, res) => {
 })
 
 app.post('/unlikePost', async (req, res) => {
-	if (await testAuth(req.headers['authorization'])) {
+	if (await testAuth(req.headers['authorization'])) { // uid : "asdfasdfasdf"
 		try {
 			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
 			let postModel = snapshot.data()
@@ -279,7 +279,7 @@ app.post('/unlikePost', async (req, res) => {
 	}
 })
 
-app.post('/addComment', async (req, res) => {
+app.post('/addComment', async (req, res) => { // "comment" : "tres is a beast" , "notiToken": "ExponentPushToken[tjJyGyGcg6kUw5G8nkACzt]", "title" : "new comment" , "kage has commented on your post"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
 			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
@@ -305,7 +305,7 @@ app.post('/addComment', async (req, res) => {
 })
 
 app.post('/removeComment', async (req, res) => {
-	if (await testAuth(req.headers['authorization'])) {
+	if (await testAuth(req.headers['authorization'])) { // uid : "asdfasdfasdf", comment : "kage has autism"
 		try {
 			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
 			let postModel = snapshot.data()
@@ -328,7 +328,7 @@ app.post('/removeComment', async (req, res) => {
 	}
 })
 
-app.post('/addFriendRequest', async (req, res) => {
+app.post('/addFriendRequest', async (req, res) => {  // uid : "uid of the person receiving the friendRequest", "reqUid" : "uid of the person sending the friendRequest", "notiToken": "ExponentPushToken[tjJyGyGcg6kUw5G8nkACzt]", "title" : "new friend Request", "body" : "open the app bitch"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
 			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
@@ -354,7 +354,7 @@ app.post('/addFriendRequest', async (req, res) => {
 })
 
 app.post('/declineFriendRequest', async (req, res) => {
-	if (await testAuth(req.headers['authorization'])) {
+	if (await testAuth(req.headers['authorization'])) {// uid : "uid of the person declining the friend request", "reqUid" : "uid of the person getting rejected lollll"
 		try {
 			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
 			let postModel = snapshot.data()
@@ -377,7 +377,7 @@ app.post('/declineFriendRequest', async (req, res) => {
 	}
 })
 
-app.post('/getFriendRequests', async (req, res) => {
+app.post('/getFriendRequests', async (req, res) => {  // uid : "asdfasdfasdf"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
 			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
@@ -396,7 +396,7 @@ app.post('/getFriendRequests', async (req, res) => {
 	}
 })
 
-app.post('/addFriend', async (req, res) => {
+app.post('/addFriend', async (req, res) => {  // uid : "asdfasdfasdf", notiToken": "ExponentPushToken[tjJyGyGcg6kUw5G8nkACzt]", "title" : "new friend ", "body" : "open app to see new friend"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
 			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
@@ -421,7 +421,7 @@ app.post('/addFriend', async (req, res) => {
 	}
 })
 
-app.post('/removeFriend', async (req, res) => {
+app.post('/removeFriend', async (req, res) => { // "uid" : "uid of person removing friends" , "reqUid" : "uid of person getting removed"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
 			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
@@ -446,7 +446,7 @@ app.post('/removeFriend', async (req, res) => {
 })
 
 app.post('/acceptFriendRequest', async (req, res) => {
-	if (await testAuth(req.headers['authorization'])) {
+	if (await testAuth(req.headers['authorization'])) {  // "uid" : "uid of person accepting friend request" , reqUid :"person whos friend request who is getting accepted", "ExponentPushToken[tjJyGyGcg6kUw5G8nkACzt]", "title" : "new friend ", "body" : "open app to see new friend"
 		try {
 			const shot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
 			let model = shot.data()
@@ -475,7 +475,7 @@ app.post('/acceptFriendRequest', async (req, res) => {
 	}
 })
 
-app.post('/getFriends', async (req, res) => {
+app.post('/getFriends', async (req, res) => {  // "uid" : "sdf"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
 			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
@@ -494,7 +494,7 @@ app.post('/getFriends', async (req, res) => {
 	}
 }) 
 
-app.post('/searchUser', async function(req, res){
+app.post('/searchUser', async function(req, res){ // "searchQuerry" : "Rahul Ravi"
 	if (await testAuth(req.headers['authorization'])){
 	  try{
   index.search(req.body.searchQuerry).then(({ hits }) => {
