@@ -51,7 +51,7 @@ async function testAuth(token) { //req.headers['authorization']
 
 }
 
-match.post('/createMatch', async (req, res) => {
+match.post('/createMatch', async (req, res) => { // "uid1" : "first user uid", "uid2" : "second user uid",  "ExponentPushToken[tjJyGyGcg6kUw5G8nkACzt]", "title" : "new match ", "body" : "open app to see"
   if (await testAuth(req.headers['authorization'])) {
     try{
     const snapshot = await admin.firestore().collection('users').doc(req.body.uid1).get()
@@ -72,7 +72,7 @@ match.post('/createMatch', async (req, res) => {
   }
   })
 
-  match.post('/cancelMatch', async (req, res) => {
+  match.post('/cancelMatch', async (req, res) => { // "uid1" : "first user uid", "uid2" : "second user uid", "
     if (await testAuth(req.headers['authorization'])) {
       try {
     const snapshot = await admin.firestore().collection('users').doc(req.body.uid1).get()
@@ -102,7 +102,7 @@ match.post('/createMatch', async (req, res) => {
   })
 
   
-match.post('/acceptMatch', async (req, res) => {
+match.post('/acceptMatch', async (req, res) => { //"uid1" : "first user uid", "uid2" : "second user uid",  "ExponentPushToken[tjJyGyGcg6kUw5G8nkACzt]", "title" : "someone accepted your match" , "body" : "open app to see"
     if (await testAuth(req.headers['authorization'])) {
       try {
     const snapshot = await admin.firestore().collection('users').doc(req.body.uid1).get()
