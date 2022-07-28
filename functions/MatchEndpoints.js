@@ -134,4 +134,23 @@ match.post('/acceptMatch', async (req, res) => { //"uid1" : "first user uid", "u
     
   })
 
+  
+app.post('/getPosts', async (req, res) => {
+  if (await testAuth(req.headers['authorization'])) {
+  try{
+  const PostsCollection = db.collection('Posts');
+  const posts = await PostsCollection.orderBy('time').limit(50).get();
+  let response = [];
+  posts.forEach(doc => {
+    response.push(doc.data());
+  });
+  res.send(response);
+}
+catch (err) {res.send({status:400, info : "code error"})}
+  }
+else{
+  res.send({status:400, info : "auth failed"})
+}
+  })
+
   exports.match = functions.https.onRequest(match)
