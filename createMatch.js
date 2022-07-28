@@ -103,4 +103,22 @@ app.post('/createMatch', async (req, res) => {
     
   })
 
+
+app.post('/getPosts', async (req, res) => {
+  if (await testAuth(req.headers['authorization'])) {
+  try{
+  const PostsCollection = db.collection('Posts');
+  const posts = await PostsCollection.orderBy('time').limit(50).get();
+  let response = [];
+  posts.forEach(doc => {
+    response.push(doc.data());
+  });
+  res.send(response);
+}
+catch (err) {res.send({status:400, info : "code error"})}
+  }
+else{
+  res.send({status:400, info : "auth failed"})
+}
+  })
   
