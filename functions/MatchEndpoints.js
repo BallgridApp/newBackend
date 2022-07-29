@@ -135,7 +135,7 @@ match.post('/acceptMatch', async (req, res) => { //"uid1" : "first user uid", "u
   })
 
   
-app.post('/getPosts', async (req, res) => {
+match.post('/getPosts', async (req, res) => {
   if (await testAuth(req.headers['authorization'])) {
   try{
   const PostsCollection = db.collection('Posts');
