@@ -127,7 +127,7 @@ app.post('/deleteUser', async (req, res) => {  //uid : "asdfasdfasdf"
 app.post('/createUser', async (req, res) => {  // uid : "asdf", then the body of the user being created. bio, fire and last name, etc
 	if (await testAuth(req.headers['authorization'])) {
 		try {
-			await admin.firestore().collection('Users').doc(req.body.uid).set(req.body)
+			await admin.firestore().collection('Users').doc(req.body.uid).add(req.body)
 			res.send({
 				info: 'User Created'
 			})
@@ -210,7 +210,7 @@ app.post('/deletePost', async (req, res) => { // uid: "asdfasdfasdf"
 app.post('/createPost', async (req, res) => { // uid: "asdfasdfasdf" , title : "a kage was born", comments : [], likes : 0
 	if (await testAuth(req.headers['authorization'])) {
 		try {
-			await admin.firestore().collection('Posts').doc(req.body.uid).set(req.body)
+			await admin.firestore().collection('Posts').doc(req.body.uid).add(req.body)
 			res.send({
 				info: 'Post Created'
 			})
@@ -334,7 +334,7 @@ app.post('/addFriendRequest', async (req, res) => {  // uid : "uid of the person
 			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
 			let postModel = snapshot.data()
 			postModel.friendRequests.push(req.body.reqUid)
-			await admin.firestore().collection('Posts').doc(req.body.uid).set(postModel)
+			await admin.firestore().collection('users').doc(req.body.uid).set(postModel)
 			sendNotificaiton(req.body.notiToken, req.body.title, req.body.body);
 			res.send({
 				status : 200
@@ -356,10 +356,10 @@ app.post('/addFriendRequest', async (req, res) => {  // uid : "uid of the person
 app.post('/declineFriendRequest', async (req, res) => {
 	if (await testAuth(req.headers['authorization'])) {// uid : "uid of the person declining the friend request", "reqUid" : "uid of the person getting rejected lollll"
 		try {
-			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
+			const snapshot = await admin.firestore().collection('users').doc(req.body.uid).get()
 			let postModel = snapshot.data()
 			postModel.friendRequests.splice(postModel.friendRequests.indexOf(req.body.reqUid))
-			await admin.firestore().collection('Posts').doc(req.body.uid).set(postModel)
+			await admin.firestore().collection('users').doc(req.body.uid).set(postModel)
 			res.send({
 				status : 200
 			})
@@ -380,7 +380,7 @@ app.post('/declineFriendRequest', async (req, res) => {
 app.post('/getFriendRequests', async (req, res) => {  // uid : "asdfasdfasdf"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
-			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
+			const snapshot = await admin.firestore().collection('users').doc(req.body.uid).get()
 			res.send(snapshot.data().friendRequests)
 		} catch (error) {
 			res.send({
@@ -399,10 +399,10 @@ app.post('/getFriendRequests', async (req, res) => {  // uid : "asdfasdfasdf"
 app.post('/addFriend', async (req, res) => {  // uid : "asdfasdfasdf", notiToken": "ExponentPushToken[tjJyGyGcg6kUw5G8nkACzt]", "title" : "new friend ", "body" : "open app to see new friend"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
-			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
+			const snapshot = await admin.firestore().collection('users').doc(req.body.uid).get()
 			let postModel = snapshot.data()
 			postModel.friends.push(req.body.reqUid)
-			await admin.firestore().collection('Posts').doc(req.body.uid).set(postModel)
+			await admin.firestore().collection('users').doc(req.body.uid).set(postModel)
 			sendNotificaiton(req.body.notiToken, req.body.title, req.body.body);
 			res.send({
 				status: 200
@@ -424,10 +424,10 @@ app.post('/addFriend', async (req, res) => {  // uid : "asdfasdfasdf", notiToken
 app.post('/removeFriend', async (req, res) => { // "uid" : "uid of person removing friends" , "reqUid" : "uid of person getting removed"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
-			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
+			const snapshot = await admin.firestore().collection('users').doc(req.body.uid).get()
 			let postModel = snapshot.data()
 			postModel.friends.splice(postModel.friends.indexOf(req.body.reqUid))
-			await admin.firestore().collection('Posts').doc(req.body.uid).set(postModel)
+			await admin.firestore().collection('users').doc(req.body.uid).set(postModel)
 			res.send({
 				status: 200
 			})
@@ -448,15 +448,15 @@ app.post('/removeFriend', async (req, res) => { // "uid" : "uid of person removi
 app.post('/acceptFriendRequest', async (req, res) => {
 	if (await testAuth(req.headers['authorization'])) {  // "uid" : "uid of person accepting friend request" , reqUid :"person whos friend request who is getting accepted", "ExponentPushToken[tjJyGyGcg6kUw5G8nkACzt]", "title" : "new friend ", "body" : "open app to see new friend"
 		try {
-			const shot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
+			const shot = await admin.firestore().collection('users').doc(req.body.uid).get()
 			let model = shot.data()
 			model.friends.push(req.body.reqUid)
-			await admin.firestore().collection('Posts').doc(req.body.uid).set(model)
+			await admin.firestore().collection('users').doc(req.body.uid).set(model)
 
-			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
+			const snapshot = await admin.firestore().collection('users').doc(req.body.uid).get()
 			let postModel = snapshot.data()
 			postModel.friendRequests.splice(postModel.friendRequests.indexOf(req.body.reqUid))
-			await admin.firestore().collection('Posts').doc(req.body.uid).set(postModel)
+			await admin.firestore().collection('users').doc(req.body.uid).set(postModel)
 			sendNotificaiton(req.body.notiToken, req.body.title, req.body.body);
 			res.send({
 				status : 200
@@ -478,7 +478,7 @@ app.post('/acceptFriendRequest', async (req, res) => {
 app.post('/getFriends', async (req, res) => {  // "uid" : "sdf"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
-			const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
+			const snapshot = await admin.firestore().collection('users').doc(req.body.uid).get()
 			res.send(snapshot.data().friends)
 		} catch (error) {
 			res.send({
