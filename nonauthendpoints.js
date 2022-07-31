@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 const bodyParser= require('body-parser')
+const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -217,8 +218,15 @@ app.post('/createChat', async (req, res) => {
 }) 
 
 app.post('/sendMessage', async (req, res) => {
-  await admin.firestore().collection('chats').doc(req.body.uid).collection('messages').add({test : "123"}) // refs of the two users creating the chat
+ await admin.firestore().collection('chats').doc(req.body.uid).collection('messages').add(req.body) // refs of the two users creating the chat
 }) 
+
+
+app.post('/updateTimestamp', async (req, res) => {
+  let timeMarker = Timestamp.fromDate(new Date(req.body.date))      //Date format should be like this and this only: 'October 24, 2004'
+  await db.collection('chats').doc(req.body.uid).collection('messages').doc(req.body.uid).update({time : timeMarker})  //Make sure to plug in the UID of the MESSAGE document
+ }) 
+
 
 
 app.post('/getMessages', async (req, res) => {
