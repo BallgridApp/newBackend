@@ -211,3 +211,30 @@ app.post('/getFriends', async (req, res) => {
   const snapshot = await admin.firestore().collection('Posts').doc(req.body.uid).get()
   res.send(snapshot.data().friends)
 })        
+
+app.post('/createChat', async (req, res) => {
+  await admin.firestore().collection('chats').add(req.body)    // refs of the two users creating the chat
+}) 
+
+app.post('/sendMessage', async (req, res) => {
+  await admin.firestore().collection('chats').doc(req.body.uid).collection('messages').add({test : "123"}) // refs of the two users creating the chat
+}) 
+
+
+app.post('/getMessages', async (req, res) => {
+  const messageCollection = db.collection('chats').doc(req.body.uid).collection('messages');
+  const messages = await messageCollection.orderBy('time').limit(50).get();
+  let response = [];
+  messages.forEach(doc => {
+    response.push(doc.data());
+  });
+  res.send(response);
+
+
+}) 
+
+
+
+
+
+
