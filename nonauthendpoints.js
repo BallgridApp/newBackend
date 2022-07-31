@@ -224,12 +224,12 @@ app.post('/sendMessage', async (req, res) => {
 
 app.post('/updateTimestamp', async (req, res) => {
   let timeMarker = Timestamp.fromDate(new Date(req.body.date))      //Date format should be like this and this only: 'October 24, 2004'
-  await db.collection('chats').doc(req.body.uid).collection('messages').doc(req.body.uid).update({time : timeMarker})  //Make sure to plug in the UID of the MESSAGE document
+  await db.collection('chats').doc(req.body.uid1).collection('messages').doc(req.body.uid2).update({time : timeMarker})  //Make sure to plug in the UID of the MESSAGE document for uid2 and the chat for uid1
  }) 
 
 
  app.post('/editMessage', async (req, res) => {
-  await db.collection('chats').doc(req.body.uid).collection('messages').doc(req.body.uid).update({message : req.body.message})  //Make sure to plug in the UID of the MESSAGE document
+  await db.collection('chats').doc(req.body.uid1).collection('messages').doc(req.body.uid2).update({message : req.body.message})  //Make sure to plug in the UID of the MESSAGE document
  }) 
 
 
