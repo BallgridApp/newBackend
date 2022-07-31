@@ -228,6 +228,11 @@ app.post('/updateTimestamp', async (req, res) => {
  }) 
 
 
+ app.post('/editMessage', async (req, res) => {
+  await db.collection('chats').doc(req.body.uid).collection('messages').doc(req.body.uid).update({message : req.body.message})  //Make sure to plug in the UID of the MESSAGE document
+ }) 
+
+
 
 app.post('/getMessages', async (req, res) => {
   const messageCollection = db.collection('chats').doc(req.body.uid).collection('messages');
