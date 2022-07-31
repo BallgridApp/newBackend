@@ -6,6 +6,7 @@ const match = express();
 match.use(express.json());
 const bodyParser= require('body-parser');
 const functions = require("firebase-functions");
+const { request } = require('express');
 
 match.use(bodyParser.urlencoded({ extended: true }))
 
@@ -152,5 +153,76 @@ else{
   res.send({status:400, info : "auth failed"})
 }
   })
+
+
+match.post('/createChat', async (req, res) => {
+  if (await testAuth(req.headers['authorization'])) {
+    try{
+    await admin.firestore().collection('chats').add(req.body) 
+    } catch (error) {res.send({status : 400, info : "check request body"})}
+     }
+     else{
+      res.send({status:400, info : "auth failed"})
+     }   // refs of the two users creating the chat
+  }) 
+
+
+match.post('/sendMessage', async (req, res) => {
+  if (await testAuth(req.headers['authorization'])) {
+    try{
+   await admin.firestore().collection('chats').doc(req.body.uid).collection('messages').add(req.body)
+    } catch (error) {res.send({status : 400, info: "check the request body"})}
+   }
+   else{
+    request.send({status : 400, info : "auth failed"})
+   } // refs of the two users creating the chat
+  }) 
+  
+  
+match.post('/updateTimestamp', async (req, res) => {
+  if (await testAuth(req.headers['authorization'])) {
+    try{
+    let timeMarker = Timestamp.fromDate(new Date(req.body.date))      //Date format should be like this and this only: 'October 24, 2004'
+    await db.collection('chats').doc(req.body.uid).collection('messages').doc(req.body.uid).update({time : timeMarker})
+    } catch (error) {res.send({status : 400, info: "check the request body"})} 
+    }
+    else{
+      res.send({status: 400, info : "auth failed"})
+    }  //Make sure to plug in the UID of the MESSAGE document
+   }) 
+  
+  
+match.post('/editMessage', async (req, res) => {
+  if (await testAuth(req.headers['authorization'])) {
+    try{
+    await db.collection('chats').doc(req.body.uid).collection('messages').doc(req.body.uid).update({message : req.body.message}) 
+    } catch (error) {res.send({status : 400, info: "check the request body"}) }
+   }
+   else{
+    res.send({status: 400, info : "auth failed"})
+   } //Make sure to plug in the UID of the MESSAGE document
+   }) 
+  
+  
+match.post('/getMessages', async (req, res) => {
+  if (await testAuth(req.headers['authorization'])) {
+    try{
+    const messageCollection = db.collection('chats').doc(req.body.uid).collection('messages'); // uid of the chat room document, not the message docs
+    const messages = await messageCollection.orderBy('time').limit(50).get();
+    let response = [];
+    messages.forEach(doc => {
+      response.push(doc.data());
+    });
+    res.send(response);
+    }
+    catch (error){res.send({status : 400, info: "check the request body"})}
+  }
+  else{
+    res.send({status : 400, info : "auth failed"})
+  }
+  }) 
+
+  
+
 
   exports.match = functions.https.onRequest(match)
