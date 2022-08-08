@@ -1,3 +1,31 @@
+const moment = require('moment');
+var admin = require('firebase-admin'); 
+const express = require('express');
+const match = express();
+match.use(express.json());
+const bodyParser= require('body-parser');
+const functions = require("firebase-functions");
+const { request, response } = require('express');
+
+match.use(bodyParser.urlencoded({ extended: true }))
+
+
+match.listen(8080, function() {
+    console.log('listening on port 8080')
+  })
+
+admin.initializeApp({
+    credential: admin.credential.applicationDefault()
+  });
+  
+
+const db = admin.firestore();
+
+
+
+
+
+
 match.post('/getMatches', async (req, res) => {
 
     //implementation of the Haversine Formula
@@ -26,7 +54,9 @@ match.post('/getMatches', async (req, res) => {
     let users = [];
     let scores = []
   
-    let snapshot = await db.collection('Users').limit(10).get()    //pulling 10 users
+    let snapshot = await db.collection('Users').limit(10).get()  
+    
+     //pulling 10 users
     snapshot.forEach(doc => users.push(doc.data()))
   
     users.forEach(user => {
@@ -98,6 +128,14 @@ match.post('/getMatches', async (req, res) => {
   
     responseArr.push(scores.indexOf(Math.max(...scores)))
     scores.splice(scores.indexOf(Math.max(...scores)), 1)
-  
-    res.send({matches: responseArr})
-  })
+
+let response = []
+
+for (let i = 0; i < responseArr.length; i++) {    
+let index = responseArr[i];
+response.push(users[index])
+}
+res.send(response);
+   
+   
+});

@@ -65,7 +65,7 @@ app.post('/updateUser', async (req, res) => { // uid : "a;sdlkfjasdfasdf" , bio:
 
 	if (authStatus) {
 		try {
-			await admin.firestore().collection('Users').doc(req.body.uid).set(req.body)
+			await admin.firestore().collection('users').doc(req.body.uid).set(req.body)
 			res.send({
 				info: 'User Updated'
 			})
@@ -86,7 +86,7 @@ app.post('/updateUser', async (req, res) => { // uid : "a;sdlkfjasdfasdf" , bio:
 app.post('/getUser', async (req, res) => {   //uid : "asdfasdfasdf"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
-			const snapshot = await admin.firestore().collection('Users').doc(req.body.uid).get()
+			const snapshot = await admin.firestore().collection('users').doc(req.body.uid).get()
 			res.send(snapshot.data())
 		} catch (error) {
 			res.send({
@@ -106,7 +106,7 @@ app.post('/getUser', async (req, res) => {   //uid : "asdfasdfasdf"
 app.post('/deleteUser', async (req, res) => {  //uid : "asdfasdfasdf"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
-			await admin.firestore().collection('Users').doc(req.body.uid).delete()
+			await admin.firestore().collection('users').doc(req.body.uid).delete()
 			res.send({
 				info: 'User Deleted'
 			})
@@ -127,7 +127,7 @@ app.post('/deleteUser', async (req, res) => {  //uid : "asdfasdfasdf"
 app.post('/createUser', async (req, res) => {  // uid : "asdf", then the body of the user being created. bio, fire and last name, etc
 	if (await testAuth(req.headers['authorization'])) {
 		try {
-			await admin.firestore().collection('Users').add(req.body)
+			await admin.firestore().collection('users').add(req.body)
 			res.send({
 				info: 'User Created'
 			})
