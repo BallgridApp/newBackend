@@ -127,7 +127,7 @@ app.post('/deleteUser', async (req, res) => {  //uid : "asdfasdfasdf"
 app.post('/createUser', async (req, res) => {  // uid : "asdf", then the body of the user being created. bio, fire and last name, etc
 	if (await testAuth(req.headers['authorization'])) {
 		try {
-			await admin.firestore().collection('users').doc(req.body.uid),add(req.body)
+			await admin.firestore().collection('users').doc(req.body.uid).add(req.body)
 			res.send({
 				info: 'User Created'
 			})
