@@ -238,7 +238,7 @@ app.post('/updateTimestampPost', async (req, res) => {  //CALL this endpoint aft
 	  }
 	  else{
 		res.send({status: 400, info : "auth failed"})
-	  }  //Make sure to plug in the UID of the MESSAGE document
+	  }  
 	 }) 
 
 app.post('/addLike', async (req, res) => { // uid : "asdfasdfasdf", "notiToken" , "ExponentPushToken[tjJyGyGcg6kUw5G8nkACzt]", title: "post", "body" : "someone has liked your post"
