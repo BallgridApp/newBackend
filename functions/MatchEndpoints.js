@@ -180,16 +180,17 @@ match.post('/sendMessage', async (req, res) => {
   }) 
   
   
-match.post('/updateTimestamp', async (req, res) => {
+match.post('/updateTimestamp', async (req, res) => { //YOU MUST CALL THIS ENPDOINT AFTER EVERY CREATE MESSAGE IN ORDER FOR THE OTHER ENDPOINTS TO WORK
   if (await testAuth(req.headers['authorization'])) {
     try{
     let timeMarker = Timestamp.fromDate(new Date(req.body.date))      //Date format should be like this and this only: 'October 24, 2004'
-    await db.collection('chats').doc(req.body.uid).collection('messages').doc(req.body.uid).update({time : timeMarker})
+    await db.collection('chats').doc(req.body.uid).collection('messages').doc(req.body.uid2).update({time : timeMarker})
     } catch (error) {res.send({status : 400, info: "check the request body"})} 
     }
     else{
       res.send({status: 400, info : "auth failed"})
-    }  //Make sure to plug in the UID of the MESSAGE document
+    }  //Make sure to plug in the UID of the MESSAGE document UID 2
+    //UID 1 is the CHAT ROOM document or in other words the main one 
    }) 
   
   
@@ -205,7 +206,7 @@ match.post('/editMessage', async (req, res) => {
    }) 
   
   
-match.post('/getMessages', async (req, res) => {
+match.post('/getMessages', async (req, res) => { //you must have a timestamp in every message for this to work. Make sure they are there. iF not, use the createTimestamp endpoint to do so. 
   if (await testAuth(req.headers['authorization'])) {
     try{
     const messageCollection = db.collection('chats').doc(req.body.uid).collection('messages'); // uid of the chat room document, not the message docs
