@@ -210,7 +210,7 @@ app.post('/deletePost', async (req, res) => { // uid: "asdfasdfasdf"
 app.post('/createPost', async (req, res) => { // uid: "asdfasdfasdf" , title : "a kage was born", comments : [], likes : 0
 	if (await testAuth(req.headers['authorization'])) {
 		try {
-			await admin.firestore().collection('Posts').doc(req.body.uid).add(req.body)
+			await admin.firestore().collection('Posts').add(req.body)
 			res.send({
 				info: 'Post Created'
 			})
@@ -228,6 +228,18 @@ app.post('/createPost', async (req, res) => { // uid: "asdfasdfasdf" , title : "
 		})
 	}
 })
+
+app.post('/updateTimestampPost', async (req, res) => {
+	if (await testAuth(req.headers['authorization'])) {
+	  try{
+	  let timeMarker = Timestamp.fromDate(new Date(req.body.date))      //Date format should be like this and this only: 'October 24, 2004'
+	  await db.collection('chats').doc(req.body.uid).collection('Posts').doc(req.body.uid).update({time : timeMarker})
+	  } catch (error) {res.send({status : 400, info: "check the request body"})} 
+	  }
+	  else{
+		res.send({status: 400, info : "auth failed"})
+	  }  //Make sure to plug in the UID of the MESSAGE document
+	 }) 
 
 app.post('/addLike', async (req, res) => { // uid : "asdfasdfasdf", "notiToken" , "ExponentPushToken[tjJyGyGcg6kUw5G8nkACzt]", title: "post", "body" : "someone has liked your post"
 	if (await testAuth(req.headers['authorization'])) {
