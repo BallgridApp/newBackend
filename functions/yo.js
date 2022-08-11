@@ -233,7 +233,7 @@ app.post('/updateTimestampPost', async (req, res) => {  //CALL this endpoint aft
 	if (await testAuth(req.headers['authorization'])) {
 	  try{
 	  let timeMarker = Timestamp.fromDate(new Date(req.body.date))      //Date format should be like this and this only: 'October 24, 2004'
-	  await db.collection('chats').doc(req.body.uid).collection('Posts').doc(req.body.uid).update({time : timeMarker})
+	  await db.collection('Posts').doc(req.body.uid).update({time : timeMarker})
 	  } catch (error) {res.send({status : 400, info: "check the request body"})} 
 	  }
 	  else{
