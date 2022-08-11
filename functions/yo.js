@@ -228,8 +228,8 @@ app.post('/createPost', async (req, res) => { // uid: "asdfasdfasdf" , title : "
 		})
 	}
 })
-
-app.post('/updateTimestampPost', async (req, res) => {
+ 
+app.post('/updateTimestampPost', async (req, res) => {  //CALL this endpoint after createPost is hit. MUST DO in order for getPosts to work properly
 	if (await testAuth(req.headers['authorization'])) {
 	  try{
 	  let timeMarker = Timestamp.fromDate(new Date(req.body.date))      //Date format should be like this and this only: 'October 24, 2004'
