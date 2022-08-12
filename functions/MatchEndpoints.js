@@ -141,7 +141,7 @@ match.post('/getPosts', async (req, res) => {
   if (await testAuth(req.headers['authorization'])) {
   try{
   const PostsCollection = db.collection('Posts');
-  const posts = await PostsCollection.orderBy('time').limit(50).get();
+  const posts = await PostsCollection.orderBy('time', 'desc').limit(50).get();
   let response = [];
   posts.forEach(doc => {
     response.push(doc.data());
