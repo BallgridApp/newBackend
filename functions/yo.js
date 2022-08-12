@@ -86,7 +86,7 @@ app.post('/updateUser', async (req, res) => { // uid : "a;sdlkfjasdfasdf" , bio:
 app.post('/getUser', async (req, res) => {   //uid : "asdfasdfasdf"
 	if (await testAuth(req.headers['authorization'])) {
 		try {
-			const snapshot = await admin.firestore().collection('users').doc(req.body.uid).get()
+			const snapshot = await admin.firestore().collection('Users').doc(req.body.uid).get()
 			res.send(snapshot.data())
 		} catch (error) {
 			res.send({
@@ -127,14 +127,15 @@ app.post('/deleteUser', async (req, res) => {  //uid : "asdfasdfasdf"
 app.post('/createUser', async (req, res) => {  // uid : "asdf", then the body of the user being created. bio, fire and last name, etc
 	if (await testAuth(req.headers['authorization'])) {
 		try {
-			await admin.firestore().collection('users').add(req.body)
+			await admin.firestore().collection('Users').doc(req.body.uid).set(req.body.data)
 			res.send({
 				info: 'User Created'
 			})
 		} catch (error) {
 			res.send({
 				status: 400, 
-				info:"check the request body"
+				info:"check the request body",
+				err: error
 			});
 		}
 	} else {
@@ -210,9 +211,14 @@ app.post('/deletePost', async (req, res) => { // uid: "asdfasdfasdf"
 app.post('/createPost', async (req, res) => { // uid: "asdfasdfasdf" , title : "a kage was born", comments : [], likes : 0
 	if (await testAuth(req.headers['authorization'])) {
 		try {
-			await admin.firestore().collection('Posts').add(req.body)
+			const timestamp = new Date().getTime()
+			const snapshot = await admin.firestore().collection('Posts').add({
+				...req.body,
+				time: timestamp
+			})
 			res.send({
-				info: 'Post Created'
+				info: 'Post Created',
+				uid: snapshot.id
 			})
 		} catch (error) {
 			res.send({
@@ -232,8 +238,12 @@ app.post('/createPost', async (req, res) => { // uid: "asdfasdfasdf" , title : "
 app.post('/updateTimestampPost', async (req, res) => {  //CALL this endpoint after createPost is hit. MUST DO in order for getPosts to work properly
 	if (await testAuth(req.headers['authorization'])) {
 	  try{
-	  let timeMarker = Timestamp.fromDate(new Date(req.body.date))      //Date format should be like this and this only: 'October 24, 2004'
-	  await db.collection('Posts').doc(req.body.uid).update({time : timeMarker})
+	  let timeMarker = new Date(req.body.date)    //Date format should be like this and this only: 'October 24, 2004'
+	  await db.collection('Posts').doc(req.body.uid).update({time : timeMarker.toString()})
+	  res.send({
+		status: 200,
+		info: "Updated"
+	  })
 	  } catch (error) {res.send({status : 400, info: "check the request body"})} 
 	  }
 	  else{
