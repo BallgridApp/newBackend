@@ -1,6 +1,6 @@
 const algoliasearch = require('algoliasearch');
 
-const client = algoliasearch('3IL7N429NT', 'ballgridSearch');
+const client = algoliasearch('***', 'ballgridSearch');
  client.initIndex('searchUser');
 
 const publicKey = client.generateSecuredApiKey(
